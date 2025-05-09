@@ -28,6 +28,7 @@ type Event = {
 	time?: string;
 	participantLimit?: number;
 	ticketPrice?: number | null;
+	tag: string;
 };
 
 type Ticket = {
@@ -252,6 +253,13 @@ export default function EventDetail() {
 						<Text className="ml-2 text-muted-foreground">
 							{event.ticketPrice ? `INR ${event.ticketPrice}` : "Free"}
 						</Text>
+					</View>
+				)}
+
+				{event.tag && (
+					<View className="flex-row items-center mb-4">
+						<Ionicons name="pricetag" size={18} color="#666" />
+						<Text className="ml-2 text-muted-foreground">{event.tag}</Text>
 					</View>
 				)}
 

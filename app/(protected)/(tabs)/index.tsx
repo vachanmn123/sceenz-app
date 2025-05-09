@@ -25,6 +25,7 @@ type Event = {
 	latitude: number;
 	longitude: number;
 	distance?: number;
+	tag: string;
 };
 
 const DEFAULT_LOCATION = {
@@ -152,6 +153,7 @@ export default function Home() {
 		const lowerQuery = searchQuery.toLowerCase();
 		return events.filter(
 			(event) =>
+				event.tag?.toLowerCase().includes(lowerQuery) ||
 				event.title.toLowerCase().includes(lowerQuery) ||
 				event.location.toLowerCase().includes(lowerQuery),
 		);
@@ -215,6 +217,14 @@ export default function Home() {
 							>
 								<Pressable onPress={() => router.push(`/event/${item.id}`)}>
 									<Text className="font-bold text-lg">{item.title}</Text>
+									{item.tag && (
+										<View className="flex-row items-center mt-1">
+											<Ionicons name="pricetag" size={16} color="#666" />
+											<Text className="ml-1 text-muted-foreground">
+												{item.tag}
+											</Text>
+										</View>
+									)}
 									<Text className="text-muted-foreground">{item.location}</Text>
 									<Text className="text-primary">
 										{item.distance?.toFixed(1)} km away
