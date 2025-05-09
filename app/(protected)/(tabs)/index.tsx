@@ -7,6 +7,7 @@ import {
 	Dimensions,
 	ActivityIndicator,
 	Pressable,
+	RefreshControl,
 } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
@@ -46,6 +47,7 @@ export default function Home() {
 		null,
 	);
 	const [initialLocation, setInitialLocation] = useState(DEFAULT_LOCATION);
+	const [refreshing, setRefreshing] = useState(false);
 
 	// Get user location permissions
 	useEffect(() => {
@@ -112,7 +114,11 @@ export default function Home() {
 	const deg2rad = (deg: number) => deg * (Math.PI / 180);
 
 	// Fetch events
-	const { data: events, isLoading } = useQuery<Event[]>({
+	const {
+		data: events,
+		isLoading,
+		refetch,
+	} = useQuery<Event[]>({
 		queryKey: ["events", initialLocation],
 		queryFn: async () => {
 			const { data, error } = await supabase.from("Events").select("*");
@@ -145,6 +151,13 @@ export default function Home() {
 		},
 		enabled: true, // Always fetch events, even if using default location
 	});
+
+	// Handle refresh
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+		await refetch();
+		setRefreshing(false);
+	}, [refetch]);
 
 	// Filter events based on search query
 	const filteredEvents = useMemo(() => {
@@ -195,7 +208,17 @@ export default function Home() {
 				</View>
 
 				{/* Drawer Content */}
-				<ScrollView className="flex-1">
+				<ScrollView
+					className="flex-1"
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+							colors={["#666"]}
+							tintColor="#666"
+						/>
+					}
+				>
 					<H1 className="text-xl mb-2">Nearby Events</H1>
 					<Muted className="mb-4">
 						{errorMsg && permissionGranted === false

@@ -52,13 +52,13 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 			<View style={styles.centeredView}>
 				<View style={styles.modalView}>
 					<View style={styles.modalHeader}>
-						<H2>Register for Event</H2>
-						<Button onPress={onClose} className="p-0 bg-transparent">
+						<H2 className="text-black">Register for Event</H2>
+						<Button onPress={onClose} className="p-0">
 							<Ionicons name="close" size={24} color="#000" />
 						</Button>
 					</View>
 
-					<Text className="mb-4">
+					<Text className="mb-4 text-black">
 						{hasTicketPrice
 							? `This event requires payment of ${price || 0} INR.`
 							: "Register to confirm your spot for this free event."}
@@ -69,6 +69,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 						placeholder="Your Name"
 						value={name}
 						onChangeText={setName}
+						className="placeholder:text-muted-foreground"
 					/>
 
 					<TextInput
@@ -78,14 +79,19 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 						keyboardType="email-address"
 						autoCapitalize="none"
 						onChangeText={setEmail}
+						className="placeholder:text-muted-foreground"
 					/>
 
 					<View style={styles.buttonContainer}>
-						<Button variant="outline" className="flex-1 mr-2" onPress={onClose}>
+						<Button className="flex-1 mr-2" onPress={onClose}>
 							<Text>Cancel</Text>
 						</Button>
-						<Button className="flex-1 ml-2" onPress={handleSubmit}>
-							<Text className="text-white">
+						<Button
+							className="flex-1 ml-2"
+							variant="outline"
+							onPress={handleSubmit}
+						>
+							<Text className="">
 								{hasTicketPrice ? "Proceed to Payment" : "Register"}
 							</Text>
 						</Button>

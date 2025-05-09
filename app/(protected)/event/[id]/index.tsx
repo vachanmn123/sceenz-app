@@ -288,7 +288,7 @@ export default function EventDetail() {
 					</View>
 				) : (
 					<Button className="mt-4 mb-8" onPress={handleRegister}>
-						<Text className="text-white font-bold">I&apos;m Interested</Text>
+						<Text className="font-bold">I&apos;m Interested</Text>
 					</Button>
 				)}
 			</ScrollView>
