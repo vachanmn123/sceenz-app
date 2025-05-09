@@ -6,7 +6,6 @@ import {
 	ScrollView,
 	ActivityIndicator,
 	Alert,
-	Image,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
@@ -81,7 +80,7 @@ export default function EventDetail() {
 						.from("Tickets")
 						.select("*")
 						.eq("event", id)
-						.eq("email", userEmail)
+						.eq("buyer", userData.user.id)
 						.single();
 
 					if (ticketError && ticketError.code !== "PGRST116") {

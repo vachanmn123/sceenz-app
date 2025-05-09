@@ -8,7 +8,7 @@ import {
 	ActivityIndicator,
 	Pressable,
 } from "react-native";
-import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -45,7 +45,6 @@ export default function Home() {
 		null,
 	);
 	const [initialLocation, setInitialLocation] = useState(DEFAULT_LOCATION);
-	const [mapReady, setMapReady] = useState(false);
 
 	// Get user location permissions
 	useEffect(() => {
@@ -158,23 +157,6 @@ export default function Home() {
 		);
 	}, [events, searchQuery]);
 
-	// Handle map ready state
-	const handleMapReady = useCallback(() => {
-		setMapReady(true);
-	}, []);
-
-	// Only render valid markers
-	const validMarkers = useMemo(() => {
-		if (!filteredEvents) return [];
-		return filteredEvents.filter(
-			(event) =>
-				typeof event.latitude === "number" &&
-				typeof event.longitude === "number" &&
-				!isNaN(event.latitude) &&
-				!isNaN(event.longitude),
-		);
-	}, [filteredEvents]);
-
 	return (
 		<View className="flex-1 bg-background">
 			{/* Map Section (Top Half) */}
@@ -190,25 +172,9 @@ export default function Home() {
 						initialRegion={initialLocation}
 						showsUserLocation={permissionGranted === true}
 						showsMyLocationButton={permissionGranted === true}
-						onMapReady={handleMapReady}
 						loadingEnabled={true}
 						loadingIndicatorColor="#666"
-					>
-						{mapReady &&
-							validMarkers.map((event) => (
-								<Marker
-									key={`marker-${event.id}`}
-									coordinate={{
-										latitude: event.latitude,
-										longitude: event.longitude,
-									}}
-									title={event.title}
-									description={event.location}
-									tracksViewChanges={false}
-									pinColor="#FF6347" // Tomato color
-								/>
-							))}
-					</MapView>
+					></MapView>
 				)}
 			</View>
 
