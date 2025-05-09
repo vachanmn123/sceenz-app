@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "ExpoSupabaseStarter",
-    "slug": "ExpoSupabaseStarter",
-    "scheme": "expo-supabase-starter",
+    "name": "Sceenz",
+    "slug": "Sceenz",
+    "scheme": "sceenz",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,7 +27,7 @@
         }
       },
       "icon": {
-        "dark": "./assets/icon-dark.png",
+        "dark": "./assets/icon.png",
         "light": "./assets/icon.png"
       },
       "bundleIdentifier": "com.flemingvincent.ExpoSupabaseStarter"
@@ -53,6 +53,12 @@
     "plugins": [
       "expo-router",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8e2abc1c-42d6-4dc4-bd31-5d3433674999"
+      }
+    }
   }
 }

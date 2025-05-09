@@ -3,6 +3,7 @@ import { Tabs } from "expo-router";
 
 import { useColorScheme } from "@/lib/useColorScheme";
 import { colors } from "@/constants/colors";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
 	const { colorScheme } = useColorScheme();
@@ -24,8 +25,24 @@ export default function TabsLayout() {
 				tabBarShowLabel: false,
 			}}
 		>
-			<Tabs.Screen name="index" options={{ title: "Home" }} />
-			<Tabs.Screen name="settings" options={{ title: "Settings" }} />
+			<Tabs.Screen
+				name="index"
+				options={{
+					title: "Events",
+					tabBarIcon: ({ color, size }) => (
+						<Ionicons name="calendar-outline" size={size} color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="settings"
+				options={{
+					title: "Account",
+					tabBarIcon: ({ color, size }) => (
+						<Ionicons name="person-outline" size={size} color={color} />
+					),
+				}}
+			/>
 		</Tabs>
 	);
 }
