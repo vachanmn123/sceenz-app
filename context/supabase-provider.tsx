@@ -1,4 +1,4 @@
-import {
+import React, {
 	createContext,
 	PropsWithChildren,
 	useContext,
@@ -7,15 +7,14 @@ import {
 } from "react";
 import { SplashScreen, useRouter } from "expo-router";
 
-import { Session } from "@supabase/supabase-js";
-
+import { User } from "@supabase/supabase-js";
 import { supabase } from "@/config/supabase";
 
 SplashScreen.preventAutoHideAsync();
 
 type AuthState = {
 	initialized: boolean;
-	session: Session | null;
+	user: User | null;
 	signUp: (email: string, password: string) => Promise<void>;
 	signIn: (email: string, password: string) => Promise<void>;
 	signOut: () => Promise<void>;
@@ -23,7 +22,7 @@ type AuthState = {
 
 export const AuthContext = createContext<AuthState>({
 	initialized: false,
-	session: null,
+	user: null,
 	signUp: async () => {},
 	signIn: async () => {},
 	signOut: async () => {},
@@ -33,7 +32,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: PropsWithChildren) {
 	const [initialized, setInitialized] = useState(false);
-	const [session, setSession] = useState<Session | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 	const router = useRouter();
 
 	const signUp = async (email: string, password: string) => {
@@ -47,9 +46,21 @@ export function AuthProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
-		if (data.session) {
-			setSession(data.session);
-			console.log("User signed up:", data.user);
+		// After sign up, try to sign in to get the user object
+		const { data: signInData, error: signInError } =
+			await supabase.auth.signInWithPassword({
+				email,
+				password,
+			});
+
+		if (signInError) {
+			console.error("Error signing in after sign up:", signInError);
+			return;
+		}
+
+		if (signInData.user) {
+			setUser(signInData.user);
+			console.log("User signed up:", signInData.user);
 		} else {
 			console.log("No user returned from sign up");
 		}
@@ -66,8 +77,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
-		if (data.session) {
-			setSession(data.session);
+		if (data.user) {
+			setUser(data.user);
 			console.log("User signed in:", data.user);
 		} else {
 			console.log("No user returned from sign in");
@@ -81,39 +92,50 @@ export function AuthProvider({ children }: PropsWithChildren) {
 			console.error("Error signing out:", error);
 			return;
 		} else {
+			setUser(null);
 			console.log("User signed out");
 		}
 	};
 
 	useEffect(() => {
-		supabase.auth.getSession().then(({ data: { session } }) => {
-			setSession(session);
+		supabase.auth.getUser().then(({ data, error }) => {
+			if (error) {
+				setUser(null);
+			} else {
+				setUser(data.user);
+			}
 		});
 
-		supabase.auth.onAuthStateChange((_event, session) => {
-			setSession(session);
-		});
+		const { data: listener } = supabase.auth.onAuthStateChange(
+			(_event, session) => {
+				setUser(session?.user ?? null);
+			},
+		);
 
 		setInitialized(true);
+
+		return () => {
+			listener?.subscription.unsubscribe();
+		};
 	}, []);
 
 	useEffect(() => {
 		if (initialized) {
 			SplashScreen.hideAsync();
-			if (session) {
+			if (user) {
 				router.replace("/");
 			} else {
 				router.replace("/welcome");
 			}
 		}
 		// eslint-disable-next-line
-	}, [initialized, session]);
+	}, [initialized, user]);
 
 	return (
 		<AuthContext.Provider
 			value={{
 				initialized,
-				session,
+				user,
 				signUp,
 				signIn,
 				signOut,

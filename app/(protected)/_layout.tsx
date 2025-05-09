@@ -7,13 +7,13 @@ export const unstable_settings = {
 };
 
 export default function ProtectedLayout() {
-	const { initialized, session } = useAuth();
+	const { initialized, user } = useAuth();
 
 	if (!initialized) {
 		return null;
 	}
 
-	if (!session) {
+	if (!user) {
 		return <Redirect href="/welcome" />;
 	}
 
@@ -24,7 +24,6 @@ export default function ProtectedLayout() {
 			}}
 		>
 			<Stack.Screen name="(tabs)" />
-			<Stack.Screen name="modal" options={{ presentation: "modal" }} />
 		</Stack>
 	);
 }
