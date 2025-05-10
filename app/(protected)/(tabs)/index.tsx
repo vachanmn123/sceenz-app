@@ -9,7 +9,7 @@ import {
 	Pressable,
 	RefreshControl,
 } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -189,7 +189,19 @@ export default function Home() {
 						showsMyLocationButton={permissionGranted === true}
 						loadingEnabled={true}
 						loadingIndicatorColor="#666"
-					></MapView>
+					>
+						{filteredEvents?.map((event) => (
+							<Marker
+								key={event.id}
+								coordinate={{
+									latitude: event.latitude,
+									longitude: event.longitude,
+								}}
+								title={event.title}
+								tracksViewChanges={false}
+							/>
+						))}
+					</MapView>
 				)}
 			</View>
 

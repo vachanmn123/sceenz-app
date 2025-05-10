@@ -266,83 +266,87 @@ export default function TicketDetails() {
 
 						{/* Review Section */}
 						<View className="h-px bg-border" />
-						<View>
-							<Text className="font-medium mb-3">Leave a Review</Text>
+						{new Date(event.dateTime) <= new Date() && (
+							<View>
+								<Text className="font-medium mb-3">Leave a Review</Text>
 
-							{existingReview ? (
-								<View>
-									<Text className="text-muted-foreground mb-2">
-										You&apos;ve already rated this event:
-									</Text>
-									<View className="flex-row mb-2">
-										{[1, 2, 3, 4, 5].map((starValue) => (
-											<Star
-												key={starValue}
-												size={20}
-												fill={
-													starValue <= existingReview.stars
-														? "#FFD700"
-														: "transparent"
-												}
-												color={
-													starValue <= existingReview.stars
-														? "#FFD700"
-														: "#71717a"
-												}
-											/>
-										))}
+								{existingReview ? (
+									<View>
+										<Text className="text-muted-foreground mb-2">
+											You&apos;ve already rated this event:
+										</Text>
+										<View className="flex-row mb-2">
+											{[1, 2, 3, 4, 5].map((starValue) => (
+												<Star
+													key={starValue}
+													size={20}
+													fill={
+														starValue <= existingReview.stars
+															? "#FFD700"
+															: "transparent"
+													}
+													color={
+														starValue <= existingReview.stars
+															? "#FFD700"
+															: "#71717a"
+													}
+												/>
+											))}
+										</View>
+										{existingReview.review && (
+											<Text className="text-muted-foreground italic">
+												&quot;{existingReview.review}&quot;
+											</Text>
+										)}
 									</View>
-									{existingReview.review && (
-										<Text className="text-muted-foreground italic">
-											&quot;{existingReview.review}&quot;
+								) : reviewSubmitted ? (
+									<View className="items-center py-4">
+										<Text className="text-center text-primary mb-2">
+											Thank you for your review!
 										</Text>
-									)}
-								</View>
-							) : reviewSubmitted ? (
-								<View className="items-center py-4">
-									<Text className="text-center text-primary mb-2">
-										Thank you for your review!
-									</Text>
-								</View>
-							) : null}
+									</View>
+								) : null}
 
-							{!reviewSubmitted && !existingReview && (
-								<>
-									<Text className="mb-1 text-muted-foreground">Rating:</Text>
-									{renderStars()}
+								{!reviewSubmitted && !existingReview && (
+									<>
+										<Text className="mb-1 text-muted-foreground">Rating:</Text>
+										{renderStars()}
 
-									<Text className="mb-1 text-muted-foreground">Comments:</Text>
-									<TextInput
-										className="border border-input rounded-md p-2 h-36 text-white"
-										placeholder="Share your experience..."
-										multiline
-										numberOfLines={4}
-										textAlignVertical="top"
-										value={review}
-										onChangeText={setReview}
-									/>
-
-									<Button
-										onPress={handleSubmitReview}
-										disabled={submitReview.isPending || rating === 0}
-									>
-										<Text>
-											{submitReview.isPending
-												? "Submitting..."
-												: existingReview
-													? "Update Review"
-													: "Submit Review"}
+										<Text className="mb-1 text-muted-foreground">
+											Comments:
 										</Text>
-									</Button>
+										<TextInput
+											className="border border-input rounded-md p-2 h-36 text-white"
+											placeholder="Share your experience..."
+											multiline
+											numberOfLines={4}
+											textAlignVertical="top"
+											value={review}
+											onChangeText={setReview}
+										/>
 
-									{submitReview.isError && (
-										<Text className="mt-2 text-destructive">
-											Error: {submitReview.error.message}
-										</Text>
-									)}
-								</>
-							)}
-						</View>
+										<Button
+											onPress={handleSubmitReview}
+											disabled={submitReview.isPending || rating === 0}
+										>
+											<Text>
+												{submitReview.isPending
+													? "Submitting..."
+													: existingReview
+														? "Update Review"
+														: "Submit Review"}
+											</Text>
+										</Button>
+
+										{submitReview.isError && (
+											<Text className="mt-2 text-destructive">
+												Error: {submitReview.error.message}
+											</Text>
+										)}
+									</>
+								)}
+							</View>
+						)}
 					</View>
 				</ScrollView>
 			</KeyboardAvoidingView>
